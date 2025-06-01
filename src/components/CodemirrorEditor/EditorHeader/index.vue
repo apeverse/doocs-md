@@ -10,7 +10,7 @@ import {
 import { useStore } from '@/stores'
 import { addPrefix, processClipboardContent } from '@/utils'
 import { copyPlain } from '@/utils/clipboard'
-import { ChevronDownIcon, Moon, PanelLeftClose, PanelLeftOpen, Settings, Sun } from 'lucide-vue-next'
+import { ChevronDownIcon, Eye, EyeOff, Moon, PanelLeftClose, PanelLeftOpen, Settings, Sun } from 'lucide-vue-next'
 
 const emit = defineEmits([`addFormat`, `formatContent`, `startCopy`, `endCopy`])
 
@@ -64,7 +64,7 @@ const formatItems = [
 
 const store = useStore()
 
-const { isDark, isCiteStatus, isCountStatus, output, primaryColor, isOpenPostSlider, editor } = storeToRefs(store)
+const { isDark, isCiteStatus, isCountStatus, output, primaryColor, isOpenPostSlider, editor, showEditor } = storeToRefs(store)
 
 const { toggleDark, editorRefresh, citeStatusChanged, countStatusChanged } = store
 
@@ -180,6 +180,12 @@ function copy() {
       <Button variant="outline" size="icon" @click="isOpenPostSlider = !isOpenPostSlider">
         <PanelLeftOpen v-show="!isOpenPostSlider" class="size-4" />
         <PanelLeftClose v-show="isOpenPostSlider" class="size-4" />
+      </Button>
+
+      <!-- 切换编辑器显示/隐藏 -->
+      <Button variant="outline" size="icon" @click="store.toggleShowEditor()">
+        <Eye v-show="showEditor" class="size-4" />
+        <EyeOff v-show="!showEditor" class="size-4" />
       </Button>
 
       <!-- 暗色切换 -->

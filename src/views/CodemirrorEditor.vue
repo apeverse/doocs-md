@@ -16,7 +16,7 @@ import { Eye, List, Pen } from 'lucide-vue-next'
 
 const store = useStore()
 const displayStore = useDisplayStore()
-const { isDark, output, editor, readingTime } = storeToRefs(store)
+const { isDark, output, editor, readingTime, showEditor } = storeToRefs(store)
 
 const {
   editorRefresh,
@@ -40,8 +40,6 @@ const {
 
 const isImgLoading = ref(false)
 const timeout = ref<NodeJS.Timeout>()
-
-const showEditor = ref(true)
 
 const searchTabRef = ref<InstanceType<typeof SearchTab>>()
 
@@ -521,7 +519,7 @@ const isOpenHeadingSlider = ref(false)
       <div class="container-main-section border-radius-10 relative flex flex-1 overflow-hidden border-1">
         <PostSlider />
         <div
-          v-show="!store.isMobile || (store.isMobile && showEditor)"
+          v-show="showEditor"
           ref="codeMirrorWrapper"
           class="codeMirror-wrapper relative flex-1"
           :class="{

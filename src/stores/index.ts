@@ -49,6 +49,7 @@ interface Post {
 
 export const useStore = defineStore(`store`, () => {
   // 是否开启深色模式
+  // const isDark = useStorage(addPrefix(`isDark`), false)
   const isDark = useDark()
   const toggleDark = useToggle(isDark)
 
@@ -103,6 +104,9 @@ export const useStore = defineStore(`store`, () => {
 
   const isOpenRightSlider = useStorage(addPrefix(`is_open_right_slider`), false)
   const isOpenPostSlider = useStorage(addPrefix(`is_open_post_slider`), false)
+
+  // 添加编辑器显示状态
+  const showEditor = useStorage(addPrefix(`showEditor`), true)
 
   /*******************************
    * 内容列表 posts：默认就带 id
@@ -761,6 +765,11 @@ export const useStore = defineStore(`store`, () => {
 
     titleList,
     isMobile,
+
+    showEditor,
+    toggleShowEditor: () => {
+      showEditor.value = !showEditor.value
+    },
   }
 })
 
