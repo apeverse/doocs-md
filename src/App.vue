@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import CodemirrorEditor from '@/views/CodemirrorEditor.vue'
+import { RouterView } from 'vue-router'
 </script>
 
 <template>
-  <CodemirrorEditor />
+  <RouterView />
 </template>
 
 <style lang="less">
