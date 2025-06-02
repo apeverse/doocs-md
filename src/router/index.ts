@@ -12,6 +12,12 @@ const routes: RouteRecordRaw[] = [
     name: `Editor`,
     component: () => import(`@/views/CodemirrorEditor.vue`),
   },
+  {
+    path: `/md`,
+    name: `Article`,
+    component: () => import(`@/views/CodemirrorEditor.vue`),
+    props: true,
+  },
 ]
 
 const router = createRouter({
