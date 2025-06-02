@@ -104,8 +104,8 @@ const features = [
                 </div>
                 <div class="mt-6">
                   <p class="text-base-content/60 leading-relaxed">
-                    水牛加密空间是一个致力于分享优质技术内容的开源社区，我们提供或集成了一系列高质量的技术文档和工具。
-                    我们的使命是让技术学习变得更加简单和有趣。
+                    水牛加密空间是一个技术交流社区，致力于分享优质技术资源，包括：开源工具、技术文档、教程，
+                    让技术学习变得简单有趣。
                   </p>
                   <div class="mt-5 flex items-center">
                     <Icon icon="mdi:star-outline" class="text-primary/80 mr-2" />
