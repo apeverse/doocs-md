@@ -18,7 +18,7 @@ const features = [
   },
   {
     title: `实时预览`,
-    description: `所见即所得，即时查看渲染效果`,
+    description: `所见即所得，秒见渲染效果`,
     icon: `mdi:eye-outline`,
   },
   {
@@ -28,7 +28,7 @@ const features = [
   },
   {
     title: `云端同步`,
-    description: `自动保存，随时随地继续创作`,
+    description: `自动保存，随时随地搞创作`,
     icon: `mdi:cloud-sync-outline`,
   },
 ]
