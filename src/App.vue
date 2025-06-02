@@ -14,6 +14,7 @@ body,
   height: 100vh;
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
 }
 
 // 抵消下拉菜单开启时带来的样式

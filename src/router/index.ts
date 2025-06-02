@@ -18,6 +18,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import(`@/views/CodemirrorEditor.vue`),
     props: true,
   },
+  {
+    path: `/:pathMatch(.*)*`,
+    name: `NotFound`,
+    component: () => import(`@/views/NotFound.vue`),
+  },
 ]
 
 const router = createRouter({

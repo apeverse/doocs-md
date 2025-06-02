@@ -27,6 +27,13 @@ const articles = ref([
     date: `2024-03-18`,
     slug: `editor-advanced-features`,
   },
+  {
+    id: 4,
+    title: `你好，世界`,
+    description: `探索世界`,
+    date: `2024-05-19`,
+    slug: `hello-world`,
+  },
 ])
 
 function goToArticle(slug: string) {
