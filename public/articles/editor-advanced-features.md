@@ -45,9 +45,9 @@
 
 ### 参考图片（来自网络搜索）
 
-<img width="600" alt="图片" src="public/articles/images/turing-machine-tape.gif">
+<img width="600" alt="图片" src="/articles/images/turing-machine-tape.gif">
 
-<img width="600" alt="图片" src="public/articles/images/turing-machine-tape-state.svg">
+<img width="600" alt="图片" src="/articles/images/turing-machine-tape-state.svg">
 
 ```
 用图灵机计算：f(x) = x + 1
@@ -91,7 +91,7 @@
 
 ### 参考图片（来自网络搜索）
 
-<img width="600" alt="图片" src="public/articles/images/von-neumann-architecture.svg">
+<img width="600" alt="图片" src="/articles/images/von-neumann-architecture.svg">
 
 ## 图灵机与冯诺依曼机部件构成对照
 
