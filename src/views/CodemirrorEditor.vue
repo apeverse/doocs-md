@@ -13,6 +13,7 @@ import { toggleFormat } from '@/utils/editor'
 import fileApi from '@/utils/file'
 import CodeMirror from 'codemirror'
 import { Eye, List, Pen } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
 
 const store = useStore()
 const displayStore = useDisplayStore()
@@ -42,6 +43,8 @@ const isImgLoading = ref(false)
 const timeout = ref<NodeJS.Timeout>()
 
 const searchTabRef = ref<InstanceType<typeof SearchTab>>()
+
+const route = useRoute()
 
 function openSearchWithSelection(cm: CodeMirror.Editor) {
   const selected = cm.getSelection().trim()
@@ -486,8 +489,47 @@ function mdLocalToRemote() {
   }
 }
 
+// 获取并加载文章内容
+async function loadArticleContent() {
+  const articleId = route.query.id as string
+  if (!articleId)
+    return
+
+  try {
+    const response = await fetch(`/articles/${articleId}.md`)
+    if (!response.ok) {
+      console.error(`文章加载失败:`, response.statusText)
+      return
+    }
+    const content = await response.text()
+    console.log(`文章内容:`, content)
+
+    // 如果编辑器已经初始化，则设置内容
+    if (editor.value) {
+      editor.value.setValue(content)
+      onEditorRefresh()
+    }
+    else {
+      // 如果编辑器还未初始化，则存储内容以便初始化时使用
+      store.posts[store.currentPostIndex].content = content
+    }
+  }
+  catch (error) {
+    console.error(`加载文章失败:`, error)
+  }
+}
+
+// 监听路由参数变化
+watch(() => route.query.id, () => {
+  loadArticleContent()
+})
+
 onMounted(() => {
   initEditor()
+  // 如果是通过 /md 路由访问，则加载文章内容
+  if (route.path === `/md`) {
+    loadArticleContent()
+  }
 })
 
 const isOpenHeadingSlider = ref(false)
