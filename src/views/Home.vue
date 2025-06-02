@@ -45,7 +45,7 @@ const features = [
               区块链与AI技术<span class="text-primary">进阶之路</span>
             </h1>
             <p class="text-base-content/60 mt-5 text-xl">
-              从基础到高级，掌握 区块链+AI 开发核心技能
+              从基础到高级，掌握（前沿技术开发）核心技能
             </p>
             <div class="mt-8 flex flex-col gap-4 sm:flex-row">
               <Button size="lg" class="gradient-button text-base" @click="goToEditor">
