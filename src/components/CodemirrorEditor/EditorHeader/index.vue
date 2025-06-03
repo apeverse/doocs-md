@@ -1,18 +1,19 @@
 <script setup lang="ts">
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Toaster } from '@/components/ui/sonner'
+
 import {
   altSign,
   ctrlKey,
   ctrlSign,
   shiftSign,
 } from '@/config'
-
 import { useStore } from '@/stores'
 import { addPrefix, processClipboardContent } from '@/utils'
 import { copyPlain } from '@/utils/clipboard'
-import { ChevronDownIcon, Eye, EyeOff, Monitor, Moon, PanelLeftClose, PanelLeftOpen, Settings, Smartphone, Sun } from 'lucide-vue-next'
+import { ChevronDownIcon, Copy, Eye, EyeOff, Monitor, Moon, PanelLeftClose, PanelLeftOpen, Save, Settings, Smartphone, Sun, Trash2 } from 'lucide-vue-next'
 
-const emit = defineEmits([`addFormat`, `formatContent`, `startCopy`, `endCopy`])
+const emit = defineEmits([`addFormat`, `formatContent`, `startCopy`, `endCopy`, `saveContent`])
 
 const formatItems = [
   {
@@ -131,6 +132,15 @@ function copy() {
     })
   }, 350)
 }
+
+// 添加清除 storage 的函数
+function clearStorage() {
+  localStorage.clear()
+  sessionStorage.clear()
+  toast.success(`本地存储已清除`)
+  // 刷新页面以应用更改
+  window.location.reload()
+}
 </script>
 
 <template>
@@ -170,7 +180,7 @@ function copy() {
         </MenubarMenu>
         <EditDropdown />
         <StyleDropdown />
-        <HelpDropdown />
+        <!-- <HelpDropdown /> -->
       </Menubar>
     </div>
 
@@ -194,16 +204,21 @@ function copy() {
         <Sun v-show="!isDark" class="size-4" />
       </Button>
 
+      <!-- 添加保存按钮 -->
+      <Button variant="outline" size="icon" @click="$emit('saveContent')">
+        <Save class="size-4" />
+      </Button>
+
       <!-- 复制按钮组 -->
-      <div class="space-x-1 bg-background text-background-foreground mx-2 flex items-center border rounded-md">
-        <Button variant="ghost" class="shadow-none" @click="copy">
-          复制
+      <div class="bg-background text-background-foreground mx-2 h-10 flex items-center border rounded-md">
+        <Button variant="ghost" size="icon" @click="copy">
+          <Copy class="size-4" />
         </Button>
-        <Separator orientation="vertical" class="h-5" />
+        <Separator orientation="vertical" class="h-4" />
         <DropdownMenu v-model="copyMode">
           <DropdownMenuTrigger as-child>
-            <Button variant="ghost" class="px-2 shadow-none">
-              <ChevronDownIcon class="text-secondary-foreground h-4 w-4" />
+            <Button variant="ghost" size="icon" class="h-10 w-10 px-2 shadow-none">
+              <ChevronDownIcon class="text-secondary-foreground size-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent
@@ -249,12 +264,35 @@ function copy() {
       </DropdownMenu>
 
       <!-- 文章信息（移动端隐藏） -->
-      <PostInfo class="hidden sm:inline-flex" />
+      <!-- <PostInfo class="hidden sm:inline-flex" /> -->
 
       <!-- 设置按钮 -->
       <Button variant="outline" size="icon" @click="store.isOpenRightSlider = !store.isOpenRightSlider">
         <Settings class="size-4" />
       </Button>
+
+      <!-- 清除存储按钮 -->
+      <AlertDialog>
+        <AlertDialogTrigger as-child>
+          <Button variant="outline" size="icon">
+            <Trash2 class="size-4" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>清除本地存储</AlertDialogTitle>
+            <AlertDialogDescription>
+              此操作将清除所有本地存储的数据，包括编辑历史、设置等。此操作不可恢复，是否继续？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogAction @click="clearStorage">
+              确定
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <Toaster rich-colors position="top-center" />
     </div>

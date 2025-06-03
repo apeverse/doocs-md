@@ -364,22 +364,6 @@ function initEditor() {
     onEditorRefresh()
     mdLocalToRemote()
   })
-
-  // 定时，30 秒记录一次
-  setInterval(() => {
-    const pre = (store.posts[store.currentPostIndex].history || [])[0]?.content
-    if (pre !== store.posts[store.currentPostIndex].content) {
-      store.posts[store.currentPostIndex].history ??= []
-      store.posts[store.currentPostIndex].history.unshift({
-        datetime: new Date().toLocaleString(`zh-CN`),
-        content: store.posts[store.currentPostIndex].content,
-      })
-      // 超长时，进行减负
-      if (store.posts[store.currentPostIndex].history.length > 10) {
-        store.posts[store.currentPostIndex].history.length = 10
-      }
-    }
-  }, 30 * 1000)
 }
 
 const container = ref(null)
@@ -535,11 +519,28 @@ onMounted(() => {
 })
 
 const isOpenHeadingSlider = ref(false)
+
+// 添加手动保存函数
+function saveContent() {
+  const content = editor.value!.getValue()
+  store.posts[store.currentPostIndex].history ??= []
+  store.posts[store.currentPostIndex].history.unshift({
+    datetime: new Date().toLocaleString(`zh-CN`),
+    content,
+  })
+  // 超长时，进行减负
+  if (store.posts[store.currentPostIndex].history.length > 10) {
+    store.posts[store.currentPostIndex].history.length = 10
+  }
+  store.posts[store.currentPostIndex].content = content
+  store.posts[store.currentPostIndex].updateDatetime = new Date()
+  toast.success(`内容已保存`)
+}
 </script>
 
 <template>
   <div ref="container" class="container flex flex-col">
-    <EditorHeader @add-format="addFormat" @format-content="formatContent" @start-copy="startCopy" @end-copy="endCopy" />
+    <EditorHeader @add-format="addFormat" @format-content="formatContent" @start-copy="startCopy" @end-copy="endCopy" @save-content="saveContent" />
     <AIPolishButton
       v-if="store.showAIToolbox"
       ref="AIPolishBtnRef"
