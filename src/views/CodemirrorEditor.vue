@@ -365,6 +365,7 @@ function initEditor() {
     onEditorRefresh()
     mdLocalToRemote()
   })
+  saveContent()
 }
 
 const container = ref(null)
@@ -537,9 +538,9 @@ function saveContent() {
   // store.posts[store.currentPostIndex].updateDatetime = new Date()
   // toast.success(`内容已保存`)
 
-  if (editor.value) {
-    onEditorRefresh()
-  }
+  // if (editor.value) {
+  //   onEditorRefresh()
+  // }
 
   // setInterval(() => {
   const pre = (store.posts[store.currentPostIndex].history || [])[0]?.content
@@ -554,7 +555,7 @@ function saveContent() {
       store.posts[store.currentPostIndex].history.length = 10
     }
 
-    toast.success(`内容已保存`)
+    // toast.success(`内容已保存`)
   }
   // }, 30 * 1000)
 }
