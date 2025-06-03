@@ -17,8 +17,9 @@ import { useRoute } from 'vue-router'
 
 const store = useStore()
 const displayStore = useDisplayStore()
-// eslint-disable-next-line unused-imports/no-unused-vars
-const { isDark, output, editor, readingTime, showEditor } = storeToRefs(store)
+
+// const { isDark, output, editor, readingTime, showEditor } = storeToRefs(store)
+const { isDark, output, editor, showEditor } = storeToRefs(store)
 
 const {
   editorRefresh,
