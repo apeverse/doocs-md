@@ -17,6 +17,7 @@ import { useRoute } from 'vue-router'
 
 const store = useStore()
 const displayStore = useDisplayStore()
+// eslint-disable-next-line unused-imports/no-unused-vars
 const { isDark, output, editor, readingTime, showEditor } = storeToRefs(store)
 
 const {
@@ -502,7 +503,7 @@ async function loadArticleContent() {
       return
     }
     const content = await response.text()
-    console.log(`文章内容:`, content)
+    // console.log(`文章内容:`, content)
 
     // 如果编辑器已经初始化，则设置内容
     if (editor.value) {
@@ -558,7 +559,7 @@ const isOpenHeadingSlider = ref(false)
     />
 
     <main class="container-main flex flex-1 flex-col">
-      <div class="container-main-section border-radius-10 relative flex flex-1 overflow-hidden border-1">
+      <div class="container-main-section border-radius-10 relative flex flex-1 overflow-hidden border-1 border-b-0">
         <PostSlider />
         <div
           v-show="showEditor"
@@ -636,7 +637,7 @@ const isOpenHeadingSlider = ref(false)
               ]"
             >
               <div
-                class="preview border-x-1 shadow-xl"
+                class="preview"
                 :class="[store.previewWidth]"
               >
                 <section id="output" class="w-full" v-html="output" />
@@ -676,9 +677,9 @@ const isOpenHeadingSlider = ref(false)
         <CssEditor class="order-2 flex-1" />
         <RightSlider class="order-2" />
       </div>
-      <footer class="h-[30px] flex select-none items-center justify-end px-4 text-[12px]">
+      <!-- <footer class="h-[30px] flex select-none items-center justify-end px-4 text-[12px]">
         字数 {{ readingTime?.words }}， 阅读大约需 {{ Math.ceil(readingTime?.minutes ?? 0) }} 分钟
-      </footer>
+      </footer> -->
 
       <button
         v-if="store.isMobile"
@@ -713,7 +714,6 @@ const isOpenHeadingSlider = ref(false)
         </AlertDialogContent>
       </AlertDialog>
     </main>
-    <Footer />
   </div>
 </template>
 

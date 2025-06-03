@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import ArticleList from '@/components/ArticleList.vue'
-import Footer from '@/components/Footer.vue'
-import BackTop from '@/components/ui/back-top/BackTop.vue'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@iconify/vue'
 import { useRouter } from 'vue-router'
@@ -136,7 +134,6 @@ const features = [
     <section id="articles" class="mx-auto flex justify-center px-4 py-6 md:py-8">
       <ArticleList />
     </section>
-    <Footer />
     <div class="fixed bottom-0 right-0 z-50">
       <BackTop :right="20" :bottom="40" :visibility-height="200" target="window" />
     </div>
