@@ -20,7 +20,8 @@ const store = useStore()
 const displayStore = useDisplayStore()
 
 // const { isDark, output, editor, readingTime, showEditor } = storeToRefs(store)
-const { isDark, output, editor, showEditor } = storeToRefs(store)
+const { isDark, output, editor, showEditor, currentPostId } = storeToRefs(store)
+const { getPostById } = store
 
 const {
   editorRefresh,
@@ -48,6 +49,9 @@ const timeout = ref<NodeJS.Timeout>()
 const searchTabRef = ref<InstanceType<typeof SearchTab>>()
 
 const route = useRoute()
+
+// 添加一个计算属性来判断当前是否在文章阅读模式
+const isArticleMode = computed(() => route.path === `/article`)
 
 function openSearchWithSelection(cm: CodeMirror.Editor) {
   const selected = cm.getSelection().trim()
@@ -232,6 +236,109 @@ watch(isDark, () => {
 // 初始化编辑器
 function initEditor() {
   const editorDom = document.querySelector<HTMLTextAreaElement>(`#editor`)!
+
+  // 如果是文章模式，不需要检查 store 初始化
+  if (isArticleMode.value) {
+    nextTick(async () => {
+      if (!editorDom) {
+        console.warn(`Editor DOM not found, waiting for next tick...`)
+        nextTick(() => initEditor())
+        return
+      }
+
+      editor.value = CodeMirror.fromTextArea(editorDom, {
+        mode: `text/x-markdown`,
+        theme: isDark.value ? `darcula` : `xq-light`,
+        lineNumbers: false,
+        lineWrapping: true,
+        styleActiveLine: true,
+        autoCloseBrackets: true,
+        extraKeys: {
+          [`${shiftKey}-${altKey}-F`]: function autoFormat(editor) {
+            const value = editor.getValue()
+            formatDoc(value).then((doc: string) => {
+              editor.setValue(doc)
+            })
+          },
+
+          [`${ctrlKey}-B`]: function bold(editor) {
+            toggleFormat(editor, {
+              prefix: `**`,
+              suffix: `**`,
+              check: s => s.startsWith(`**`) && s.endsWith(`**`),
+            })
+          },
+
+          [`${ctrlKey}-I`]: function italic(editor) {
+            toggleFormat(editor, {
+              prefix: `*`,
+              suffix: `*`,
+              check: s => s.startsWith(`*`) && s.endsWith(`*`),
+            })
+          },
+
+          [`${ctrlKey}-D`]: function del(editor) {
+            toggleFormat(editor, {
+              prefix: `~~`,
+              suffix: `~~`,
+              check: s => s.startsWith(`~~`) && s.endsWith(`~~`),
+            })
+          },
+
+          [`${ctrlKey}-K`]: function link(editor) {
+            toggleFormat(editor, {
+              prefix: `[`,
+              suffix: `]()`,
+              check: s => s.startsWith(`[`) && s.endsWith(`]()`),
+              afterInsertCursorOffset: -1,
+            })
+          },
+
+          [`${ctrlKey}-E`]: function code(editor) {
+            toggleFormat(editor, {
+              prefix: `\``,
+              suffix: `\``,
+              check: s => s.startsWith(`\``) && s.endsWith(`\``),
+            })
+          },
+
+          // 标题：单行逻辑，手动处理
+          [`${ctrlKey}-H`]: function heading(editor) {
+            const selected = editor.getSelection()
+            const replaced = selected.startsWith(`# `) ? selected.slice(2) : `# ${selected}`
+            editor.replaceSelection(replaced)
+          },
+
+          [`${ctrlKey}-U`]: function unorderedList(editor) {
+            const selected = editor.getSelection()
+            const lines = selected.split(`\n`)
+            const isList = lines.every(line => line.trim().startsWith(`- `))
+            const updated = isList
+              ? lines.map(line => line.replace(/^- +/, ``)).join(`\n`)
+              : lines.map(line => `- ${line}`).join(`\n`)
+            editor.replaceSelection(updated)
+          },
+
+          [`${ctrlKey}-O`]: function orderedList(editor) {
+            const selected = editor.getSelection()
+            const lines = selected.split(`\n`)
+            const isList = lines.every(line => /^\d+\.\s/.test(line.trim()))
+            const updated = isList
+              ? lines.map(line => line.replace(/^\d+\.\s+/, ``)).join(`\n`)
+              : lines.map((line, i) => `${i + 1}. ${line}`).join(`\n`)
+            editor.replaceSelection(updated)
+          },
+          [`${ctrlKey}-F`]: (cm: CodeMirror.Editor) => {
+            openSearchWithSelection(cm)
+          },
+          [`${ctrlKey}-G`]: function search() {
+            // use this to avoid CodeMirror's built-in search functionality
+          },
+        },
+      })
+    })
+    return
+  }
 
   // 确保 store 已经初始化
   if (!store.posts.length || !store.posts[store.currentPostIndex].content) {
@@ -553,6 +660,10 @@ const isOpenHeadingSlider = ref(false)
 
 // 添加手动保存函数
 function saveContent() {
+  // 如果是文章模式，不进行内容存储
+  if (isArticleMode.value)
+    return
+
   const pre = (store.posts[store.currentPostIndex].history || [])[0]?.content
   if (pre !== store.posts[store.currentPostIndex].content) {
     store.posts[store.currentPostIndex].history ??= []
@@ -566,6 +677,17 @@ function saveContent() {
     }
   }
 }
+
+// 修改 watch currentPostId
+watch(currentPostId, () => {
+  // 如果是文章模式，不进行内容同步
+  if (isArticleMode.value)
+    return
+
+  const post = getPostById(currentPostId.value)
+  if (post)
+    toRaw(editor.value!).setValue(post.content)
+})
 </script>
 
 <template>
