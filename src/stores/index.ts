@@ -130,6 +130,36 @@ export const useStore = defineStore(`store`, () => {
   // 是否为移动端
   const isMobile = useStorage(`isMobile`, false)
 
+  // 确保在 store 创建时就初始化好 posts
+  if (!posts.value.length || !posts.value[0].content) {
+    posts.value = [{
+      id: uuid(),
+      title: `内容1`,
+      content: DEFAULT_CONTENT,
+      history: [
+        { datetime: new Date().toLocaleString(`zh-cn`), content: DEFAULT_CONTENT },
+      ],
+      createDatetime: new Date(),
+      updateDatetime: new Date(),
+    }]
+  }
+
+  // 补齐 id 和其他字段
+  posts.value = posts.value.map((post, index) => {
+    const now = Date.now()
+    return {
+      ...post,
+      id: post.id ?? uuid(),
+      createDatetime: post.createDatetime ?? new Date(now + index),
+      updateDatetime: post.updateDatetime ?? new Date(now + index),
+    }
+  })
+
+  // 兼容：如果本地没有 currentPostId，或指向的文章已不存在
+  if (!currentPostId.value || !posts.value.some(p => p.id === currentPostId.value)) {
+    currentPostId.value = posts.value[0]?.id ?? ``
+  }
+
   function handleResize() {
     isMobile.value = window.innerWidth <= 768
   }
@@ -141,24 +171,6 @@ export const useStore = defineStore(`store`, () => {
 
   onBeforeUnmount(() => {
     window.removeEventListener(`resize`, handleResize)
-  })
-
-  // 在补齐 id 后，若 currentPostId 无效 ➜ 自动指向第一篇
-  onBeforeMount(() => {
-    posts.value = posts.value.map((post, index) => {
-      const now = Date.now()
-      return {
-        ...post,
-        id: post.id ?? uuid(),
-        createDatetime: post.createDatetime ?? new Date(now + index),
-        updateDatetime: post.updateDatetime ?? new Date(now + index),
-      }
-    })
-
-    // 兼容：如果本地没有 currentPostId，或指向的文章已不存在
-    if (!currentPostId.value || !posts.value.some(p => p.id === currentPostId.value)) {
-      currentPostId.value = posts.value[0]?.id ?? ``
-    }
   })
 
   /** 根据 id 找索引 */

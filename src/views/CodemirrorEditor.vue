@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue'
+import DEFAULT_CONTENT from '@/assets/example/markdown.md?raw'
 import { AIPolishButton, AIPolishPopover, useAIPolish } from '@/components/AIPolish'
 import { SearchTab } from '@/components/ui/search-tab'
 import { altKey, altSign, ctrlKey, ctrlSign, shiftKey, shiftSign } from '@/config'
@@ -232,11 +233,20 @@ watch(isDark, () => {
 function initEditor() {
   const editorDom = document.querySelector<HTMLTextAreaElement>(`#editor`)!
 
-  if (!editorDom.value && route.path === `/editor`) {
-    editorDom.value = store.posts[store.currentPostIndex].content
+  // 确保 store 已经初始化
+  if (!store.posts.length || !store.posts[store.currentPostIndex].content) {
+    console.warn(`Store not properly initialized, waiting for next tick...`)
+    nextTick(() => initEditor())
+    return
   }
 
-  nextTick(() => {
+  nextTick(async () => {
+    if (!editorDom) {
+      console.warn(`Editor DOM not found, waiting for next tick...`)
+      nextTick(() => initEditor())
+      return
+    }
+
     editor.value = CodeMirror.fromTextArea(editorDom, {
       mode: `text/x-markdown`,
       theme: isDark.value ? `darcula` : `xq-light`,
@@ -328,15 +338,32 @@ function initEditor() {
       },
     })
 
+    // 在编辑器初始化后，设置初始内容
+    const content = store.posts[store.currentPostIndex].content
+    if (!content) {
+      console.warn(`No content found in store, using default content`)
+      editor.value.setValue(DEFAULT_CONTENT)
+    }
+    else {
+      editor.value.setValue(content)
+    }
+
+    // 确保 renderer 已经初始化
+    await nextTick()
+
+    // 手动触发一次预览更新
+    editorRefresh()
+
+    // 监听编辑器内容变化
     editor.value.on(`change`, (e) => {
       clearTimeout(changeTimer.value)
       changeTimer.value = setTimeout(() => {
-        onEditorRefresh()
-        if (e.getValue() !== store.posts[store.currentPostIndex].content) {
+        const newContent = e.getValue()
+        if (newContent !== store.posts[store.currentPostIndex].content) {
+          store.posts[store.currentPostIndex].content = newContent
           store.posts[store.currentPostIndex].updateDatetime = new Date()
+          editorRefresh()
         }
-
-        store.posts[store.currentPostIndex].content = e.getValue()
       }, 300)
     })
 
@@ -362,7 +389,7 @@ function initEditor() {
 
     initPolishEvent(editor.value)
     // 确保初始化时也更新预览内容
-    onEditorRefresh()
+    editorRefresh()
     mdLocalToRemote()
   })
   saveContent()
@@ -514,7 +541,9 @@ watch(() => route.query.id, () => {
   loadArticleContent()
 })
 
-onMounted(() => {
+onMounted(async () => {
+  // 确保 store 已经初始化
+  await nextTick()
   initEditor()
   // 如果是通过 /article 路由访问，则加载文章内容
   loadArticleContent()
@@ -524,25 +553,6 @@ const isOpenHeadingSlider = ref(false)
 
 // 添加手动保存函数
 function saveContent() {
-  // const content = editor.value!.getValue()
-  // store.posts[store.currentPostIndex].history ??= []
-  // store.posts[store.currentPostIndex].history.unshift({
-  //   datetime: new Date().toLocaleString(`zh-CN`),
-  //   content,
-  // })
-  // // 超长时，进行减负
-  // if (store.posts[store.currentPostIndex].history.length > 10) {
-  //   store.posts[store.currentPostIndex].history.length = 10
-  // }
-  // store.posts[store.currentPostIndex].content = content
-  // store.posts[store.currentPostIndex].updateDatetime = new Date()
-  // toast.success(`内容已保存`)
-
-  // if (editor.value) {
-  //   onEditorRefresh()
-  // }
-
-  // setInterval(() => {
   const pre = (store.posts[store.currentPostIndex].history || [])[0]?.content
   if (pre !== store.posts[store.currentPostIndex].content) {
     store.posts[store.currentPostIndex].history ??= []
@@ -554,10 +564,7 @@ function saveContent() {
     if (store.posts[store.currentPostIndex].history.length > 10) {
       store.posts[store.currentPostIndex].history.length = 10
     }
-
-    // toast.success(`内容已保存`)
   }
-  // }, 30 * 1000)
 }
 </script>
 
