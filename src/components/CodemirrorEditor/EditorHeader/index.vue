@@ -10,7 +10,7 @@ import {
 import { useStore } from '@/stores'
 import { addPrefix, processClipboardContent } from '@/utils'
 import { copyPlain } from '@/utils/clipboard'
-import { ChevronDownIcon, Eye, EyeOff, Moon, PanelLeftClose, PanelLeftOpen, Settings, Sun } from 'lucide-vue-next'
+import { ChevronDownIcon, Eye, EyeOff, Monitor, Moon, PanelLeftClose, PanelLeftOpen, Settings, Smartphone, Sun } from 'lucide-vue-next'
 
 const emit = defineEmits([`addFormat`, `formatContent`, `startCopy`, `endCopy`])
 
@@ -64,7 +64,7 @@ const formatItems = [
 
 const store = useStore()
 
-const { isDark, isCiteStatus, isCountStatus, output, primaryColor, isOpenPostSlider, editor, showEditor } = storeToRefs(store)
+const { isDark, isCiteStatus, isCountStatus, output, primaryColor, isOpenPostSlider, editor, showEditor, previewWidth } = storeToRefs(store)
 
 const { toggleDark, editorRefresh, citeStatusChanged, countStatusChanged } = store
 
@@ -195,7 +195,7 @@ function copy() {
       </Button>
 
       <!-- 复制按钮组 -->
-      <div class="bg-background space-x-1 text-background-foreground mx-2 flex items-center border rounded-md">
+      <div class="space-x-1 bg-background text-background-foreground mx-2 flex items-center border rounded-md">
         <Button variant="ghost" class="shadow-none" @click="copy">
           复制
         </Button>
@@ -225,6 +225,28 @@ function copy() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
+
+      <!-- 预览模式切换 -->
+      <DropdownMenu>
+        <DropdownMenuTrigger as-child>
+          <Button variant="outline" size="icon">
+            <Smartphone v-show="previewWidth === 'w-[375px]'" class="size-4" />
+            <Monitor v-show="previewWidth === 'w-full'" class="size-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end" :align-offset="-5" class="w-[200px]">
+          <DropdownMenuRadioGroup v-model="previewWidth">
+            <DropdownMenuRadioItem value="w-[375px]">
+              <Smartphone class="mr-2 size-4" />
+              移动端
+            </DropdownMenuRadioItem>
+            <DropdownMenuRadioItem value="w-full">
+              <Monitor class="mr-2 size-4" />
+              电脑端
+            </DropdownMenuRadioItem>
+          </DropdownMenuRadioGroup>
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <!-- 文章信息（移动端隐藏） -->
       <PostInfo class="hidden sm:inline-flex" />

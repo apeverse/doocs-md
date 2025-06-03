@@ -127,7 +127,7 @@ const features = [
       </div>
       <div class="pb-4 text-center">
         <a href="#articles" class="text-primary bounce-animation inline-block">
-          <Icon icon="mdi:chevron-down" class="text-3xl" />
+          <Icon icon="mdi:chevron-down" class="text-5xl" />
         </a>
       </div>
     </section>
