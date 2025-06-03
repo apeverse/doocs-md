@@ -13,7 +13,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import(`@/views/CodemirrorEditor.vue`),
   },
   {
-    path: `/md`,
+    path: `/article`,
     name: `Article`,
     component: () => import(`@/views/CodemirrorEditor.vue`),
     props: true,
@@ -31,7 +31,7 @@ const router = createRouter({
   scrollBehavior(to, from, savedPosition) {
     console.log(`from\nto`, from, to)
     // 如果是从首页导航到编辑器页面，则滚动到顶部
-    if (from.path === `/` && (to.path === `/editor` || to.path === `/md`)) {
+    if (from.path === `/` && (to.path === `/editor` || to.path === `/article`)) {
       return { top: 0 }
     }
     // 其他情况保持默认行为

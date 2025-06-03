@@ -232,7 +232,7 @@ watch(isDark, () => {
 function initEditor() {
   const editorDom = document.querySelector<HTMLTextAreaElement>(`#editor`)!
 
-  if (!editorDom.value) {
+  if (!editorDom.value && route.path === `/editor`) {
     editorDom.value = store.posts[store.currentPostIndex].content
   }
 
@@ -361,6 +361,7 @@ function initEditor() {
     })
 
     initPolishEvent(editor.value)
+    // 确保初始化时也更新预览内容
     onEditorRefresh()
     mdLocalToRemote()
   })
@@ -477,6 +478,8 @@ function mdLocalToRemote() {
 
 // 获取并加载文章内容
 async function loadArticleContent() {
+  if (route.path !== `/article`)
+    return
   const articleId = route.query.id as string
   if (!articleId)
     return
@@ -495,10 +498,10 @@ async function loadArticleContent() {
       editor.value.setValue(content)
       onEditorRefresh()
     }
-    else {
-      // 如果编辑器还未初始化，则存储内容以便初始化时使用
-      store.posts[store.currentPostIndex].content = content
-    }
+    // else {
+    //   // 如果编辑器还未初始化，则存储内容以便初始化时使用
+    //   store.posts[store.currentPostIndex].content = content
+    // }
   }
   catch (error) {
     console.error(`加载文章失败:`, error)
@@ -512,29 +515,48 @@ watch(() => route.query.id, () => {
 
 onMounted(() => {
   initEditor()
-  // 如果是通过 /md 路由访问，则加载文章内容
-  if (route.path === `/md`) {
-    loadArticleContent()
-  }
+  // 如果是通过 /article 路由访问，则加载文章内容
+  loadArticleContent()
 })
 
 const isOpenHeadingSlider = ref(false)
 
 // 添加手动保存函数
 function saveContent() {
-  const content = editor.value!.getValue()
-  store.posts[store.currentPostIndex].history ??= []
-  store.posts[store.currentPostIndex].history.unshift({
-    datetime: new Date().toLocaleString(`zh-CN`),
-    content,
-  })
-  // 超长时，进行减负
-  if (store.posts[store.currentPostIndex].history.length > 10) {
-    store.posts[store.currentPostIndex].history.length = 10
+  // const content = editor.value!.getValue()
+  // store.posts[store.currentPostIndex].history ??= []
+  // store.posts[store.currentPostIndex].history.unshift({
+  //   datetime: new Date().toLocaleString(`zh-CN`),
+  //   content,
+  // })
+  // // 超长时，进行减负
+  // if (store.posts[store.currentPostIndex].history.length > 10) {
+  //   store.posts[store.currentPostIndex].history.length = 10
+  // }
+  // store.posts[store.currentPostIndex].content = content
+  // store.posts[store.currentPostIndex].updateDatetime = new Date()
+  // toast.success(`内容已保存`)
+
+  if (editor.value) {
+    onEditorRefresh()
   }
-  store.posts[store.currentPostIndex].content = content
-  store.posts[store.currentPostIndex].updateDatetime = new Date()
-  toast.success(`内容已保存`)
+
+  // setInterval(() => {
+  const pre = (store.posts[store.currentPostIndex].history || [])[0]?.content
+  if (pre !== store.posts[store.currentPostIndex].content) {
+    store.posts[store.currentPostIndex].history ??= []
+    store.posts[store.currentPostIndex].history.unshift({
+      datetime: new Date().toLocaleString(`zh-CN`),
+      content: store.posts[store.currentPostIndex].content,
+    })
+    // 超长时，进行减负
+    if (store.posts[store.currentPostIndex].history.length > 10) {
+      store.posts[store.currentPostIndex].history.length = 10
+    }
+
+    toast.success(`内容已保存`)
+  }
+  // }, 30 * 1000)
 }
 </script>
 

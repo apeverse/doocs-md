@@ -168,7 +168,7 @@ const categories = ref([
 
 function goToArticle(slug: string) {
   router.push({
-    path: `/md`,
+    path: `/article`,
     query: { id: slug },
   })
 }
