@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import ArticleList from '@/components/ArticleList.vue'
+import CategoryOutline from '@/components/CategoryOutline.vue'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@iconify/vue'
 import { useRouter } from 'vue-router'
@@ -132,7 +133,12 @@ const features = [
 
     <!-- 下部分：文章列表 -->
     <section id="articles" class="mx-auto flex justify-center px-4 py-6 md:py-8">
-      <ArticleList />
+      <div class="max-w-7xl w-full flex">
+        <CategoryOutline class="hidden md:block" />
+        <div class="flex-1 pl-8">
+          <ArticleList />
+        </div>
+      </div>
     </section>
     <div class="fixed bottom-0 right-0 z-50">
       <BackTop :right="20" :bottom="40" :visibility-height="200" target="window" />

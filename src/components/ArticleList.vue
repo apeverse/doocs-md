@@ -45,7 +45,7 @@ function goToArticle(slug: string) {
 </script>
 
 <template>
-  <div class="max-w-4xl w-full px-4 py-8">
+  <div class="w-full px-8 pb-4 pt-9">
     <h2 class="mb-6 text-2xl font-bold">
       最新文章
     </h2>
