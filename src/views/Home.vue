@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import ArticleList from '@/components/ArticleList.vue'
+import Footer from '@/components/Footer.vue'
+import BackTop from '@/components/ui/back-top/BackTop.vue'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@iconify/vue'
 import { useRouter } from 'vue-router'
@@ -42,7 +44,7 @@ const features = [
         <div class="lg:flex lg:items-center lg:justify-between">
           <div class="lg:w-1/2">
             <h1 class="text-4xl font-extrabold lg:text-5xl sm:text-4xl sm:tracking-tight">
-              区块链与AI技术<span class="text-primary">进阶之路</span>
+              区块链与AI技术<span class="text-blue-600 italic">进阶之路</span>
             </h1>
             <p class="text-base-content/60 mt-5 text-xl">
               从基础到高级，掌握（前沿技术开发）核心技能
@@ -52,14 +54,16 @@ const features = [
                 开始编辑
                 <Icon icon="mdi:arrow-right" class="ml-2" />
               </Button>
-              <Button variant="outline" size="lg" class="text-base">
-                文章列表
-              </Button>
+              <a href="#articles" class="text-primary inline-block">
+                <Button variant="outline" size="lg" class="text-base">
+                  文章列表
+                </Button>
+              </a>
             </div>
             <div class="grid grid-cols-1 mt-10 gap-6 sm:grid-cols-2">
               <div v-for="item in features" :key="item.title" class="flex items-start">
                 <div class="flex-shrink-0">
-                  <div class="bg-primary/80 rounded-box h-12 w-12 flex items-center justify-center text-white">
+                  <div class="rounded-box h-12 w-12 flex items-center justify-center bg-blue-500 text-white">
                     <Icon :icon="item.icon" class="text-lg" />
                   </div>
                 </div>
@@ -76,7 +80,7 @@ const features = [
           </div>
           <div class="mt-10 lg:mt-0 lg:w-5/12">
             <div class="rounded-box bg-base-100 overflow-hidden shadow-xl">
-              <div class="bg-primary px-6 py-4">
+              <div class="bg-blue-500 px-6 py-4">
                 <h3 class="text-lg text-white font-medium">
                   关于我们
                 </h3>
@@ -85,7 +89,7 @@ const features = [
                 <div class="flex items-center">
                   <div class="flex-shrink-0">
                     <div class="relative h-24 w-24 flex items-center justify-center overflow-hidden border-4 border-blue-100 rounded-full bg-gray-200">
-                      <img src="/logo.png" alt="Doocs" class="object-cover h-full w-full">
+                      <img src="/logo.png" alt="Buffalo" class="object-cover h-full w-full">
                     </div>
                   </div>
                   <div class="ml-4">
@@ -93,7 +97,7 @@ const features = [
                       <h4 class="font-bold">
                         水牛
                       </h4>
-                      <a href="https://github.com/doocs" class="hover:text-primary ml-2" target="_blank">
+                      <a href="https://github.com/" class="hover:text-primary ml-2" target="_blank">
                         <Icon icon="mdi:github" />
                       </a>
                     </div>
@@ -123,7 +127,7 @@ const features = [
       </div>
       <div class="pb-4 text-center">
         <a href="#articles" class="text-primary bounce-animation inline-block">
-          <Icon icon="mdi:chevron-down" class="text-2xl" />
+          <Icon icon="mdi:chevron-down" class="text-3xl" />
         </a>
       </div>
     </section>
@@ -132,20 +136,16 @@ const features = [
     <section id="articles" class="mx-auto flex justify-center px-4 py-6 md:py-8">
       <ArticleList />
     </section>
+    <Footer />
+    <div class="fixed bottom-0 right-0 z-50">
+      <BackTop :right="20" :bottom="40" :visibility-height="200" target="window" />
+    </div>
   </div>
 </template>
 
 <style scoped>
 .bg-background {
   background-color: hsl(var(--background));
-}
-
-.section {
-  @apply relative;
-}
-
-.gradient-button {
-  @apply bg-gradient-to-r from-primary to-primary/80 text-white hover:opacity-90 transition-opacity;
 }
 
 .bounce-animation {

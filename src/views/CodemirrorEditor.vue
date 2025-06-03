@@ -628,7 +628,13 @@ const isOpenHeadingSlider = ref(false)
           :class="[store.isOpenRightSlider ? 'w-0' : 'w-100']"
         >
           <div id="preview" ref="preview" class="preview-wrapper w-full p-5">
-            <div id="output-wrapper" class="w-full" :class="{ output_night: !backLight }">
+            <div
+              id="output-wrapper"
+              :class="[
+                { output_night: !backLight },
+                showEditor ? 'w-full' : 'max-w-5xl w-full',
+              ]"
+            >
               <div
                 class="preview border-x-1 shadow-xl"
                 :class="[store.previewWidth]"
@@ -642,7 +648,7 @@ const isOpenHeadingSlider = ref(false)
                 </div>
               </div>
             </div>
-            <BackTop target="preview" :right="store.isMobile ? 24 : 20" :bottom="store.isMobile ? 90 : 20" />
+            <BackTop target="preview" :right="store.isMobile ? 24 : 20" :bottom="120" />
           </div>
           <div
             class="bg-background absolute left-0 top-0 border rounded-2 rounded-lt-none p-2 text-sm shadow"
@@ -707,6 +713,7 @@ const isOpenHeadingSlider = ref(false)
         </AlertDialogContent>
       </AlertDialog>
     </main>
+    <Footer />
   </div>
 </template>
 
