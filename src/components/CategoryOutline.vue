@@ -11,6 +11,7 @@ const expandedCategories = ref<Record<number, boolean>>({
   2: false,
   3: false,
   4: false,
+  5: false, // 添加新分类的默认折叠状态
 })
 
 // 切换分类的折叠状态
@@ -126,6 +127,39 @@ const categories = ref([
           { id: 24, title: `技术创新的思维模式`, slug: `tech-innovation-mindset` },
           { id: 25, title: `从 0 到 1 的创新实践`, slug: `zero-to-one-innovation` },
           { id: 26, title: `技术创业方法论`, slug: `tech-startup-methodology` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 5,
+    name: `密码学应用`,
+    children: [
+      {
+        id: 51,
+        name: `基础密码学`,
+        articles: [
+          { id: 27, title: `密码学基础概念`, slug: `crypto-basics` },
+          { id: 28, title: `对称加密与非对称加密`, slug: `symmetric-asymmetric-crypto` },
+          { id: 29, title: `哈希函数与数字签名`, slug: `hash-digital-signature` },
+        ],
+      },
+      {
+        id: 52,
+        name: `区块链密码学`,
+        articles: [
+          { id: 30, title: `零知识证明技术`, slug: `zero-knowledge-proof` },
+          { id: 31, title: `同态加密实践`, slug: `homomorphic-encryption` },
+          { id: 32, title: `多方安全计算`, slug: `secure-multi-party-computation` },
+        ],
+      },
+      {
+        id: 53,
+        name: `密码学应用`,
+        articles: [
+          { id: 33, title: `密码学在隐私保护中的应用`, slug: `crypto-privacy` },
+          { id: 34, title: `密码学在身份认证中的应用`, slug: `crypto-authentication` },
+          { id: 35, title: `密码学在数据安全中的应用`, slug: `crypto-data-security` },
         ],
       },
     ],
