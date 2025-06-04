@@ -648,8 +648,12 @@ watch(() => route.query.id, () => {
 })
 
 onMounted(async () => {
-  if (isArticleMode.value)
+  if (isArticleMode.value) {
     showEditor.value = false
+  }
+  else {
+    showEditor = true
+  }
   // 确保 store 已经初始化
   await nextTick()
   initEditor()
