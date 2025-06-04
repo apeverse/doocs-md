@@ -50,8 +50,8 @@ const searchTabRef = ref<InstanceType<typeof SearchTab>>()
 
 const route = useRoute()
 
-// 添加一个计算属性来判断当前是否在文章阅读模式
 const isArticleMode = computed(() => route.path === `/article`)
+const isEditorMode = computed(() => route.path === `/editor`)
 
 function openSearchWithSelection(cm: CodeMirror.Editor) {
   const selected = cm.getSelection().trim()
@@ -499,7 +499,6 @@ function initEditor() {
     editorRefresh()
     mdLocalToRemote()
   })
-  saveContent()
 }
 
 const container = ref(null)
@@ -649,6 +648,8 @@ watch(() => route.query.id, () => {
 })
 
 onMounted(async () => {
+  if (isArticleMode.value)
+    showEditor.value = false
   // 确保 store 已经初始化
   await nextTick()
   initEditor()
@@ -676,6 +677,7 @@ function saveContent() {
       store.posts[store.currentPostIndex].history.length = 10
     }
   }
+  toast.success(`保存成功`)
 }
 
 // 修改 watch currentPostId
@@ -851,7 +853,7 @@ watch(currentPostId, () => {
 
       <RunLoading />
 
-      <AlertDialog v-model:open="store.isOpenConfirmDialog">
+      <AlertDialog v-if="isEditorMode" v-model:open="store.isOpenConfirmDialog">
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>提示</AlertDialogTitle>

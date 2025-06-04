@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
 import { Toaster } from '@/components/ui/sonner'
-
 import {
   altSign,
   ctrlKey,
   ctrlSign,
   shiftSign,
 } from '@/config'
+
 import { useStore } from '@/stores'
 import { addPrefix, processClipboardContent } from '@/utils'
 import { copyPlain } from '@/utils/clipboard'
 import { ChevronDownIcon, Copy, Eye, EyeOff, Monitor, Moon, PanelLeftClose, PanelLeftOpen, Save, Settings, Smartphone, Sun, Trash2 } from 'lucide-vue-next'
+import { useRoute } from 'vue-router'
 
 const emit = defineEmits([`addFormat`, `formatContent`, `startCopy`, `endCopy`, `saveContent`])
 
@@ -72,6 +73,11 @@ const { toggleDark, editorRefresh, citeStatusChanged, countStatusChanged } = sto
 const copyMode = useStorage(addPrefix(`copyMode`), `txt`)
 const source = ref(``)
 const { copy: copyContent } = useClipboard({ source })
+
+const route = useRoute()
+
+const isEditorMode = computed(() => route.path === `/editor`)
+const isArticleMode = computed(() => route.path === `/article`)
 
 // 复制到微信公众号
 function copy() {
@@ -144,9 +150,9 @@ function clearStorage() {
 </script>
 
 <template>
-  <header class="header-container h-15 flex flex-wrap items-center justify-between px-5 dark:bg-[#191c20]">
+  <header class="header-container h-15 flex flex-wrap items-center px-5 dark:bg-[#191c20]" :class="isArticleMode ? 'justify-end' : 'justify-between' ">
     <!-- 左侧菜单：移动端隐藏 -->
-    <div class="space-x-2 hidden sm:flex">
+    <div v-if="isEditorMode" class="space-x-2 hidden sm:flex">
       <Menubar class="menubar">
         <FileDropdown />
 
@@ -187,13 +193,13 @@ function clearStorage() {
     <!-- 右侧操作区：移动端保留核心按钮 -->
     <div class="space-x-2 flex flex-wrap">
       <!-- 展开/收起左侧内容栏 -->
-      <Button variant="outline" size="icon" @click="isOpenPostSlider = !isOpenPostSlider">
+      <Button v-if="isEditorMode" variant="outline" size="icon" @click="isOpenPostSlider = !isOpenPostSlider">
         <PanelLeftOpen v-show="!isOpenPostSlider" class="size-4" />
         <PanelLeftClose v-show="isOpenPostSlider" class="size-4" />
       </Button>
 
       <!-- 切换编辑器显示/隐藏 -->
-      <Button variant="outline" size="icon" @click="store.toggleShowEditor()">
+      <Button v-if="isEditorMode" variant="outline" size="icon" @click="store.toggleShowEditor()">
         <Eye v-show="showEditor" class="size-4" />
         <EyeOff v-show="!showEditor" class="size-4" />
       </Button>
@@ -205,7 +211,7 @@ function clearStorage() {
       </Button>
 
       <!-- 添加保存按钮 -->
-      <Button variant="outline" size="icon" @click="$emit('saveContent')">
+      <Button v-if="isEditorMode" variant="outline" size="icon" @click="$emit('saveContent')">
         <Save class="size-4" />
       </Button>
 
@@ -272,7 +278,7 @@ function clearStorage() {
       </Button>
 
       <!-- 清除存储按钮 -->
-      <AlertDialog>
+      <AlertDialog v-if="isEditorMode">
         <AlertDialogTrigger as-child>
           <Button variant="outline" size="icon">
             <Trash2 class="size-4" />
