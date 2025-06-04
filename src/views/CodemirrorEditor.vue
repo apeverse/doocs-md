@@ -652,7 +652,7 @@ onMounted(async () => {
     showEditor.value = false
   }
   else {
-    showEditor = true
+    showEditor.value = true
   }
   // 确保 store 已经初始化
   await nextTick()
