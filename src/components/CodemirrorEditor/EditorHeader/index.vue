@@ -216,7 +216,7 @@ function clearStorage() {
       </Button>
 
       <!-- 复制按钮组 -->
-      <div class="bg-background text-background-foreground mx-2 h-10 flex items-center border rounded-md">
+      <div v-if="isEditorMode" class="bg-background text-background-foreground mx-2 h-10 flex items-center border rounded-md">
         <Button variant="ghost" size="icon" @click="copy">
           <Copy class="size-4" />
         </Button>
@@ -273,7 +273,7 @@ function clearStorage() {
       <!-- <PostInfo class="hidden sm:inline-flex" /> -->
 
       <!-- 设置按钮 -->
-      <Button variant="outline" size="icon" @click="store.isOpenRightSlider = !store.isOpenRightSlider">
+      <Button v-if="isEditorMode" variant="outline" size="icon" @click="store.isOpenRightSlider = !store.isOpenRightSlider">
         <Settings class="size-4" />
       </Button>
 

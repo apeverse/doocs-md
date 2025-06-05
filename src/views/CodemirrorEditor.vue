@@ -855,7 +855,7 @@ watch(currentPostId, () => {
 
       <InsertMpCardDialog />
 
-      <RunLoading />
+      <RunLoading v-if="isEditorMode" />
 
       <AlertDialog v-if="isEditorMode" v-model:open="store.isOpenConfirmDialog">
         <AlertDialogContent>
